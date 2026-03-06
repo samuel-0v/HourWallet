@@ -35,4 +35,12 @@ export class AuthRepository implements IAuthRepository {
         if (!row) return null;
         return mapRowToUser(row);
     }
+
+    async updateAverageHourlyRate(userId: number, newRate: number): Promise<void> {
+        db.prepare(`UPDATE users SET average_hourly_rate = ? WHERE id = ?`).run(newRate, userId);
+    }
+
+    async updateTotalHours(userId: number, hoursDelta: number): Promise<void> {
+        db.prepare(`UPDATE users SET total_hours = total_hours + ? WHERE id = ?`).run(hoursDelta, userId);
+    }
 }

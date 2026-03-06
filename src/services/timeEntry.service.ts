@@ -1,4 +1,5 @@
 import { ITimeEntryService, ITimeEntryRepository, TimeEntryCreate, TimeEntryOutput } from "../types/timeEntry";
+import { IAuthRepository } from "../types/user";
 
 function toOutput(t: any): TimeEntryOutput {
     return {
@@ -15,13 +16,26 @@ function toOutput(t: any): TimeEntryOutput {
 
 export class TimeEntryService implements ITimeEntryService {
     private repo: ITimeEntryRepository;
+    private repoUser: IAuthRepository;
 
-    constructor(repo: ITimeEntryRepository) {
+    constructor(repo: ITimeEntryRepository, repoUser: IAuthRepository) {
         this.repo = repo;
+        this.repoUser = repoUser;
     }
 
     async addTimeEntry(entry: TimeEntryCreate): Promise<TimeEntryOutput> {
-        const created = await this.repo.createTimeEntry(entry);
+        const user = await this.repoUser.getUserById(entry.userId);
+        if (!user) throw new Error("User not found");
+        
+        const amount = entry.amount ?? user.averageHourlyRate * entry.hours;
+        const entryToCreate = { ...entry, amount };
+
+        const created = await this.repo.createTimeEntry(entryToCreate);
+        await this.repoUser.updateTotalHours(entry.userId, entry.hours + user.totalHours);
+        if (entry.amount) {
+            const newAverage = (user.averageHourlyRate * user.totalHours + amount) / (user.totalHours + entry.hours);
+            await this.repoUser.updateAverageHourlyRate(entry.userId, newAverage);
+        }
         return toOutput(created);
     }
 

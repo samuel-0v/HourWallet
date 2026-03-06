@@ -5,7 +5,7 @@ export const timeEntryCreateSchema = z.object({
   userId: z.number(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve estar no formato YYYY-MM-DD"),
   hours: z.number().positive("Horas devem ser um número positivo"),
-  amount: z.number().positive("Valor deve ser um número positivo"),
+  amount: z.number().optional(),
   description: z.string().optional()
 });
 

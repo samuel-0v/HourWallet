@@ -30,6 +30,8 @@ export interface IAuthRepository {
     createUser(user: UserCreate): Promise<User>;
     getUserByUsername(username: string): Promise<User | null>;
     getUserById(id: number): Promise<User | null>;
+    updateAverageHourlyRate(userId: number, newRate: number): Promise<void>;
+    updateTotalHours(userId: number, hoursDelta: number): Promise<void>;
 }
 
 export interface IAuthService {

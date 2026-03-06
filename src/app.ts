@@ -27,7 +27,7 @@ const authService: IAuthService = new AuthService(authRepo);
 const authController: IAuthController = new AuthController(authService);
 
 const timeRepo: ITimeEntryRepository = new TimeEntryRepository();
-const timeService: ITimeEntryService = new TimeEntryService(timeRepo);
+const timeService: ITimeEntryService = new TimeEntryService(timeRepo, authRepo);
 const timeController: ITimeEntryController = new TimeEntryController(timeService);
 
 app.register(async (app) => {
