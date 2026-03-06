@@ -15,7 +15,7 @@ export interface TimeEntryCreate {
     userId: number;
     date: string; // data do trabalho (YYYY-MM-DD)
     hours: number; // quantidade de horas trabalhadas
-    amount: number; // valor recebido nessa entrada (opcional, pode ser calculado a partir do averageHourlyRate do usuário)
+    amount?: number; // valor recebido nessa entrada (opcional, pode ser calculado a partir do averageHourlyRate do usuário)
     description?: string; // descrição opcional
 }
 

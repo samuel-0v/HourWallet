@@ -1,0 +1,39 @@
+:root{
+    --primary:#1E3A8A;
+    --secondary:#3B82F6;
+    --success:#10B981;
+    --warning:#F59E0B;
+    --error:#EF4444;
+    --bg:#F3F4F6;
+    --card:#FFFFFF;
+    --text:#111827;
+    --muted:#6B7280;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; background:var(--bg); color:var(--text)}
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;background:linear-gradient(180deg,var(--primary),#243d8f);color:white;padding:24px;display:flex;flex-direction:column;gap:18px}
+.brand{font-weight:700;font-size:20px}
+.nav-btn{background:transparent;border:none;color:rgba(255,255,255,0.95);padding:10px 12px;text-align:left;border-radius:8px;cursor:pointer}
+.nav-btn:hover{background:rgba(255,255,255,0.06)}
+.main{flex:1;padding:28px}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(17,24,39,0.06)}
+.content .form{max-width:720px;margin:0 auto;display:grid;gap:12px}
+label{font-size:14px;color:var(--muted)}
+input,select,textarea{padding:10px;border-radius:8px;border:1px solid #e6e9ee;background:transparent;font-size:14px}
+.btn{background:var(--primary);color:white;padding:10px 14px;border-radius:10px;border:none;cursor:pointer}
+.btn.secondary{background:var(--secondary)}
+.row{display:flex;gap:12px}
+.muted{color:var(--muted);font-size:13px}
+.table{width:100%;border-collapse:collapse}
+.table th{font-weight:600;text-align:left;padding:8px;color:var(--muted)}
+.table td{padding:12px;border-top:1px solid #f0f2f5}
+.balance{font-weight:700;font-size:18px}
+.chip{display:inline-flex;padding:6px 8px;border-radius:999px;font-size:13px}
+.chip.success{background:rgba(16,185,129,0.12);color:var(--success)}
+.chip.warning{background:rgba(245,158,11,0.12);color:var(--warning)}
+.chip.error{background:rgba(239,68,68,0.08);color:var(--error)}
+.center{display:flex;justify-content:center;align-items:center}
+
+@media(max-width:800px){.sidebar{display:none}.main{padding:18px}}

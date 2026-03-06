@@ -1,11 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HourWallet</title>
+    <link rel="stylesheet" href="/styles.css">
+    <meta name="theme-color" content="#1E3A8A">
 </head>
 <body>
-    
+    <div id="app" class="app">
+        <aside class="sidebar">
+            <div class="brand">HourWallet</div>
+            <nav>
+                <button id="nav-login" class="nav-btn">Login</button>
+                <button id="nav-register" class="nav-btn">Registrar</button>
+                <button id="nav-dashboard" class="nav-btn">Painel</button>
+            </nav>
+        </aside>
+        <main class="main">
+            <header class="header">
+                <h1 id="page-title">Bem-vindo</h1>
+            </header>
+            <section id="content" class="content"></section>
+        </main>
+    </div>
+
+    <script src="/app.js" type="module"></script>
 </body>
 </html>
