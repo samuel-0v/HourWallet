@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { IAuthService, IAuthRepository, UserCreate, UserLoginOutput } from "../types/user";
+import { IAuthService, IUserRepository, UserCreate, UserLoginOutput } from "../types/user";
 
 function toUserLoginOutput(user: any): UserLoginOutput {
     return {
@@ -12,9 +12,9 @@ function toUserLoginOutput(user: any): UserLoginOutput {
 }
 
 export class AuthService implements IAuthService {
-    private repo: IAuthRepository;
+    private repo: IUserRepository;
 
-    constructor(repo: IAuthRepository) {
+    constructor(repo: IUserRepository) {
         this.repo = repo;
     }
 
@@ -22,7 +22,7 @@ export class AuthService implements IAuthService {
         const existing = await this.repo.getUserByUsername(user.username);
         if (existing) throw new Error("Username already exists");
         const hash = await bcrypt.hash(user.password, 10);
-        const created = await this.repo.createUser({ username: user.username, password: hash });
+        const created = await this.repo.createUser({ username: user.username, password: hash, averageHourlyRate: user.averageHourlyRate });
         return toUserLoginOutput(created);
     }
 

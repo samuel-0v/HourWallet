@@ -1,5 +1,5 @@
 import { db } from "../database/db";
-import { IAuthRepository, User, UserCreate } from "../types/user";
+import { IUserRepository, User, UserCreate } from "../types/user";
 
 function mapRowToUser(row: any): User {
     return {
@@ -14,12 +14,12 @@ function mapRowToUser(row: any): User {
     };
 }
 
-export class AuthRepository implements IAuthRepository {
+export class UserRepository implements IUserRepository {
     async createUser(user: UserCreate): Promise<User> {
         const insert = db.prepare(
-            `INSERT INTO users (username, password) VALUES (?, ?)`
+            `INSERT INTO users (username, password, average_hourly_rate) VALUES (?, ?, ?)`
         );
-        const info = insert.run(user.username, user.password);
+        const info = insert.run(user.username, user.password, user.averageHourlyRate ?? 0);
         const row = db.prepare(`SELECT * FROM users WHERE id = ?`).get(info.lastInsertRowid);
         return mapRowToUser(row);
     }

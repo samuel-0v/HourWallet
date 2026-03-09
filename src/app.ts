@@ -2,19 +2,21 @@ import Fastify from "fastify"
 import fastifyStatic from "@fastify/static"
 
 import authRoutes from "./routes/auth.routes";
-import { IAuthService, IAuthController, IAuthRepository } from "./types/user";
-
-import { AuthRepository } from "./repositories/auth.repository";
+import { IAuthService, IAuthController, IUserRepository } from "./types/user";
+import { UserRepository } from "./repositories/user.repository";
 import { AuthService } from "./services/auth.service";
 import { AuthController } from "./controllers/auth.controller";
 
+import userRoutes from "./routes/user.routes";
+import { IUserController, IUserService } from "./types/user";
+import { UserController } from "./controllers/user.controller";
+import { UserService } from "./services/user.service";
 
-import timeEntryRoutes from "./routes/timeEntry.routes";
-import { ITimeEntryService, ITimeEntryRepository, ITimeEntryController } from "./types/timeEntry";
-import { TimeEntryController } from "./controllers/timeEntry.controller";
-import { TimeEntryService } from "./services/timeEntry.service";
-import { TimeEntryRepository } from "./repositories/timeEntry.repository";
-
+import WorkEntriesRoutes from "./routes/workEntries.routes";
+import { IWorkEntriesService, IWorkEntriesRepository, IWorkEntriesController } from "./types/workEntries";
+import { WorkEntriesRepository } from "./repositories/workEntries.repository";
+import { WorkEntriesService } from "./services/workEntries.service";
+import { WorkEntriesController } from "./controllers/workEntries.controller";
 
 export const app = Fastify()
 app.register(fastifyStatic, {
@@ -22,21 +24,28 @@ app.register(fastifyStatic, {
   prefix: "/"
 })
 
-const authRepo: IAuthRepository = new AuthRepository();
-const authService: IAuthService = new AuthService(authRepo);
+const userRepo: IUserRepository = new UserRepository();
+const authService: IAuthService = new AuthService(userRepo);
 const authController: IAuthController = new AuthController(authService);
+const userService: IUserService = new UserService(userRepo);
+const userController: IUserController = new UserController(userService);
 
-const timeRepo: ITimeEntryRepository = new TimeEntryRepository();
-const timeService: ITimeEntryService = new TimeEntryService(timeRepo, authRepo);
-const timeController: ITimeEntryController = new TimeEntryController(timeService);
+const timeRepo: IWorkEntriesRepository = new WorkEntriesRepository();
+const timeService: IWorkEntriesService = new WorkEntriesService(timeRepo, userRepo);
+const timeController: IWorkEntriesController = new WorkEntriesController(timeService);
+
 
 app.register(async (app) => {
   await authRoutes(app, authController);
 }, { prefix: "/auth" })
 
 app.register(async (app) => {
-  await timeEntryRoutes(app, timeController);
-}, { prefix: "/time-entries" })
+  await userRoutes(app, userController);
+}, { prefix: "/users" })
+
+app.register(async (app) => {
+  await WorkEntriesRoutes(app, timeController);
+}, { prefix: "/work-entries" })
 
 app.get("/ping", async () => {
   return { message: "Pong" }

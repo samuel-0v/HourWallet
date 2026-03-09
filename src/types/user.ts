@@ -15,7 +15,8 @@ export interface User {
 
 export interface UserCreate {
     username: string;
-    password: string; // recomendação: armazenar hash, não senha pura
+    password: string;
+    averageHourlyRate?: number; 
 }
 
 export interface UserLoginOutput {
@@ -26,7 +27,7 @@ export interface UserLoginOutput {
     totalHours: number; // total de horas acumuladas (para referência, não é o saldo atual)
 }
 
-export interface IAuthRepository {
+export interface IUserRepository {
     createUser(user: UserCreate): Promise<User>;
     getUserByUsername(username: string): Promise<User | null>;
     getUserById(id: number): Promise<User | null>;
@@ -39,7 +40,15 @@ export interface IAuthService {
     login(username: string, password: string): Promise<{ user: UserLoginOutput; token: string }>;
 }
 
+export interface IUserService {
+    getSaldo(userId: number): Promise<{ totalHours: number; totalAmount: number }>;
+}
+
 export interface IAuthController {
     register(req: FastifyRequest, reply: FastifyReply): Promise<UserLoginOutput>;
     login(req: FastifyRequest, reply: FastifyReply): Promise<{ user: UserLoginOutput; token: string }>;
+}
+
+export interface IUserController {
+    getSaldo(req: FastifyRequest, reply: FastifyReply): Promise<{ totalHours: number; totalAmount: number }>;
 }

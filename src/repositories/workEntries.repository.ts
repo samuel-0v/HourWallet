@@ -1,7 +1,7 @@
 import { db } from "../database/db";
-import { ITimeEntryRepository, TimeEntry, TimeEntryCreate } from "../types/timeEntry";
+import { IWorkEntriesRepository, WorkEntries, WorkEntriesCreate } from "../types/workEntries";
 
-function mapRowToTimeEntry(row: any): TimeEntry {
+function mapRowToWorkEntries(row: any): WorkEntries {
     return {
         id: row.id,
         userId: row.user_id,
@@ -14,24 +14,28 @@ function mapRowToTimeEntry(row: any): TimeEntry {
     };
 }
 
-export class TimeEntryRepository implements ITimeEntryRepository {
-    async createTimeEntry(entry: TimeEntryCreate): Promise<TimeEntry> {
+export class WorkEntriesRepository implements IWorkEntriesRepository {
+    async createWorkEntries(entry: WorkEntriesCreate): Promise<WorkEntries> {
         const insert = db.prepare(
             `INSERT INTO time_entries (user_id, date, hours, amount, description) VALUES (?, ?, ?, ?, ?)`
         );
         const info = insert.run(entry.userId, entry.date, entry.hours, entry.amount ?? 0, entry.description ?? null);
         const row = db.prepare(`SELECT * FROM time_entries WHERE id = ?`).get(info.lastInsertRowid);
-        return mapRowToTimeEntry(row);
+        return mapRowToWorkEntries(row);
     }
 
-    async getTimeEntriesByUserId(userId: number): Promise<TimeEntry[]> {
+    async getTimeEntriesByUserId(userId: number): Promise<WorkEntries[]> {
         const rows = db.prepare(`SELECT * FROM time_entries WHERE user_id = ? ORDER BY date DESC`).all(userId);
-        return rows.map(mapRowToTimeEntry);
+        return rows.map(mapRowToWorkEntries);
     }
 
-    async getTimeEntryById(id: number): Promise<TimeEntry | null> {
+    async getWorkEntriesById(id: number): Promise<WorkEntries | null> {
         const row = db.prepare(`SELECT * FROM time_entries WHERE id = ?`).get(id);
         if (!row) return null;
-        return mapRowToTimeEntry(row);
+        return mapRowToWorkEntries(row);
+    }
+
+    async deleteWorkEntries(id: number, userId: number): Promise<void> {
+        db.prepare(`DELETE FROM time_entries WHERE id = ? AND user_id = ?`).run(id, userId);
     }
 }
