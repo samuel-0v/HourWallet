@@ -10,8 +10,7 @@ export class WorkEntriesController implements IWorkEntriesController {
     }
 
     async addWorkEntries(req: FastifyRequest, reply: FastifyReply) {
-        const body = WorkEntriesCreateSchema.parse(req.body);
-
+        const body: WorkEntriesCreate = WorkEntriesCreateSchema.parse(req.body);
         const out = await this.service.addWorkEntries(body);
         reply.code(201).send(out);
         return out;

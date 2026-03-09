@@ -31,7 +31,11 @@ export class WorkEntriesService implements IWorkEntriesService {
             throw new Error("Amount is required when average hourly rate is not set");
         }
 
-        const amount = entry.amount ?? user.averageHourlyRate * entry.hours;
+        const amount = entry.amount !== undefined && entry.amount > 0 ? entry.amount : user.averageHourlyRate * entry.hours;
+        if(amount < 1) {
+            throw new Error(`Amount cannot be negative ${amount}`);
+        }
+        
         const entryToCreate = { ...entry, amount };
 
         const created = await this.repo.createWorkEntries(entryToCreate);

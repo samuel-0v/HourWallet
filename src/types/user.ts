@@ -37,7 +37,7 @@ export interface IUserRepository {
 
 export interface IAuthService {
     register(user: UserCreate): Promise<UserLoginOutput>;
-    login(username: string, password: string): Promise<{ user: UserLoginOutput; token: string }>;
+    login(username: string, password: string): Promise<UserLoginOutput>;
 }
 
 export interface IUserService {
@@ -45,8 +45,9 @@ export interface IUserService {
 }
 
 export interface IAuthController {
-    register(req: FastifyRequest, reply: FastifyReply): Promise<UserLoginOutput>;
-    login(req: FastifyRequest, reply: FastifyReply): Promise<{ user: UserLoginOutput; token: string }>;
+    register(req: FastifyRequest, reply: FastifyReply): Promise<void>;
+    login(req: FastifyRequest, reply: FastifyReply): Promise<void>;
+    refresh(req: FastifyRequest, reply: FastifyReply): Promise<void>;
 }
 
 export interface IUserController {

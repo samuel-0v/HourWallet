@@ -22,17 +22,17 @@ export class AuthService implements IAuthService {
         const existing = await this.repo.getUserByUsername(user.username);
         if (existing) throw new Error("Username already exists");
         const hash = await bcrypt.hash(user.password, 10);
-        const created = await this.repo.createUser({ username: user.username, password: hash, averageHourlyRate: user.averageHourlyRate });
+        const createData: any = { username: user.username, password: hash };
+        if (user.averageHourlyRate !== undefined) createData.averageHourlyRate = user.averageHourlyRate;
+        const created = await this.repo.createUser(createData);
         return toUserLoginOutput(created);
     }
 
-    async login(username: string, password: string): Promise<{ user: UserLoginOutput; token: string }> {
+    async login(username: string, password: string): Promise<UserLoginOutput> {
         const user = await this.repo.getUserByUsername(username);
         if (!user) throw new Error("Invalid credentials");
         const ok = await bcrypt.compare(password, user.password);
         if (!ok) throw new Error("Invalid credentials");
-        const userOut = toUserLoginOutput(user);
-        const token = Buffer.from(`${user.id}:${user.username}:${Date.now()}`).toString("base64");
-        return { user: userOut, token };
+        return toUserLoginOutput(user);
     }
 }

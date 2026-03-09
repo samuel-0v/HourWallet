@@ -1,5 +1,7 @@
 import Fastify from "fastify"
 import fastifyStatic from "@fastify/static"
+import fastifyJWT from "@fastify/jwt"
+import { ACCESS_SECRET, REFRESH_SECRET } from "./utils/jwt"
 
 import authRoutes from "./routes/auth.routes";
 import { IAuthService, IAuthController, IUserRepository } from "./types/user";
@@ -19,6 +21,23 @@ import { WorkEntriesService } from "./services/workEntries.service";
 import { WorkEntriesController } from "./controllers/workEntries.controller";
 
 export const app = Fastify()
+
+app.register(fastifyJWT, {
+  secret: ACCESS_SECRET,
+  namespace: "access",
+  jwtVerify: "accessJwtVerify",
+  jwtSign: "accessJwtSign",
+  sign: { expiresIn: "15m" },
+})
+
+app.register(fastifyJWT, {
+  secret: REFRESH_SECRET,
+  namespace: "refresh",
+  jwtVerify: "refreshJwtVerify",
+  jwtSign: "refreshJwtSign",
+  sign: { expiresIn: "7d" },
+})
+
 app.register(fastifyStatic, {
   root: `${__dirname}/../public`,
   prefix: "/"
