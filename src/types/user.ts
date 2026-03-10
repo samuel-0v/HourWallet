@@ -27,6 +27,11 @@ export interface UserLoginOutput {
     totalHours: number; // total de horas acumuladas (para referência, não é o saldo atual)
 }
 
+export interface UserSaldo {
+    totalHours: number;
+    averageHourlyRate: number;
+}
+
 export interface IUserRepository {
     createUser(user: UserCreate): Promise<User>;
     getUserByUsername(username: string): Promise<User | null>;
@@ -41,7 +46,7 @@ export interface IAuthService {
 }
 
 export interface IUserService {
-    getSaldo(userId: number): Promise<{ totalHours: number; totalAmount: number }>;
+    getSaldo(userId: number): Promise<UserSaldo>;
 }
 
 export interface IAuthController {
@@ -51,5 +56,5 @@ export interface IAuthController {
 }
 
 export interface IUserController {
-    getSaldo(req: FastifyRequest, reply: FastifyReply): Promise<{ totalHours: number; totalAmount: number }>;
+    getSaldo(req: FastifyRequest, reply: FastifyReply): Promise<void>;
 }

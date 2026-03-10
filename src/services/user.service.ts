@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { IUserService, IUserRepository } from "../types/user";
+import { IUserService, IUserRepository, UserSaldo } from "../types/user";
 
 
 
@@ -10,10 +10,10 @@ export class UserService implements IUserService {
         this.repo = repo;
     }
 
-    async getSaldo(userId: number): Promise<{ totalHours: number; totalAmount: number }> {
+    async getSaldo(userId: number): Promise<UserSaldo> {
         const user = await this.repo.getUserById(userId);
         if (!user) throw new Error("User not found");
-        const totalAmount = user.totalHours * user.averageHourlyRate;
-        return { totalHours: user.totalHours, totalAmount };
+        const averageHourlyRate = user.averageHourlyRate;
+        return { totalHours: user.totalHours, averageHourlyRate };
     }
 }

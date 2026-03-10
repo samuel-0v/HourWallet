@@ -193,8 +193,8 @@ async function showDashboard() {
       info.innerHTML = `
         <div class="muted" style="font-size:12px">Total de horas</div>
         <div style="font-size:22px;font-weight:700">${Number(s.totalHours || 0).toFixed(2)} h</div>
-        <div class="muted" style="font-size:12px;margin-top:6px">Valor acumulado</div>
-        <div style="font-size:18px;font-weight:600">R$ ${Number(s.totalAmount || 0).toFixed(2)}</div>
+        <div class="muted" style="font-size:12px;margin-top:6px">Valor médio por hora</div>
+        <div style="font-size:18px;font-weight:600">R$ ${Number(s.averageHourlyRate || 0).toFixed(2)}</div>
         <div style="margin-top:8px"><span class="chip ${positive ? 'success' : 'error'}">${positive ? '✓ Saldo positivo' : '⚠ Saldo negativo'}</span></div>`;
     } catch {}
   }
