@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { id } from "zod/locales";
 
 // Schema para criação de WorkEntries
 export const WorkEntriesCreateSchema = z.object({
@@ -11,6 +12,7 @@ export const WorkEntriesCreateSchema = z.object({
 
 // Schema para atualização de WorkEntries (todos os campos opcionais)
 export const WorkEntriesUpdateSchema = z.object({
+  id: z.number(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve estar no formato YYYY-MM-DD").optional(),
   hours: z.number().positive("Horas devem ser um número positivo").optional(),
   amount: z.number().positive("Valor deve ser um número positivo").optional(),

@@ -1,4 +1,4 @@
-import { IWorkEntriesService, IWorkEntriesRepository, WorkEntriesCreate, WorkEntriesOutput } from "../types/workEntries";
+import { IWorkEntriesService, IWorkEntriesRepository, WorkEntriesCreate, WorkEntriesOutput, WorkEntriesUpdate } from "../types/workEntries";
 import { IUserRepository } from "../types/user";
 
 function toOutput(t: any): WorkEntriesOutput {
@@ -52,10 +52,40 @@ export class WorkEntriesService implements IWorkEntriesService {
         return rows.map(toOutput);
     }
 
-    async getWorkEntries(id: number): Promise<WorkEntriesOutput | null> {
+    async getWorkEntries(id: number, userId: number): Promise<WorkEntriesOutput | null> {
         const row = await this.repo.getWorkEntriesById(id);
         if (!row) return null;
+        if (row.userId !== userId) throw new Error("Unauthorized");
         return toOutput(row);
+    }
+
+    async updateWorkEntries(entry: WorkEntriesUpdate, userId: number): Promise<WorkEntriesOutput> {
+        const existingEntry = await this.repo.getWorkEntriesById(entry.id);
+        if (!existingEntry) throw new Error("Time entry not found");
+        if (existingEntry.userId !== userId) throw new Error("Unauthorized");
+
+        const updatedEntry = { ...existingEntry, ...entry };
+        const updated = await this.repo.updateWorkEntries(updatedEntry);
+
+        // Se as horas ou o valor foram atualizados, precisamos ajustar a média e total do usuário
+        if (entry.hours !== undefined || entry.amount !== undefined) {
+            const user = await this.repoUser.getUserById(existingEntry.userId);
+            if (!user) throw new Error("User not found");
+
+            const hoursDelta = (entry.hours ?? existingEntry.hours) - existingEntry.hours;
+            const amountDelta = (entry.amount ?? existingEntry.amount) - existingEntry.amount;
+
+            const newTotalHours = user.totalHours + hoursDelta;
+            const newAverage = newTotalHours > 0 ? (user.averageHourlyRate * user.totalHours + amountDelta) / newTotalHours : 0;
+
+            await this.repoUser.updateTotalHours(existingEntry.userId, hoursDelta);
+            if(newAverage >= 0){
+                await this.repoUser.updateAverageHourlyRate(existingEntry.userId, newAverage);
+
+            }
+        }
+
+        return toOutput(updated);
     }
 
     async deleteWorkEntries(id: number, userId: number): Promise<void> {

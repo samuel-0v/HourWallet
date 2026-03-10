@@ -19,6 +19,10 @@ async function WorkEntriesRoutes(app: FastifyInstance, controller: IWorkEntriesC
     app.get("/entry/:id", { preHandler: authMiddleware }, async (req, reply) => {
         return await controller.getWorkEntries(req, reply);
     });
+
+    app.put("/", { preHandler: authMiddleware }, async (req, reply) => {
+        return await controller.updateWorkEntries(req, reply);
+    });
 }
 
 export default WorkEntriesRoutes;

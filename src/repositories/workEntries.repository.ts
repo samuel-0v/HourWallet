@@ -1,5 +1,5 @@
 import { db } from "../database/db";
-import { IWorkEntriesRepository, WorkEntries, WorkEntriesCreate } from "../types/workEntries";
+import { IWorkEntriesRepository, WorkEntries, WorkEntriesCreate, WorkEntriesUpdate } from "../types/workEntries";
 
 function mapRowToWorkEntries(row: any): WorkEntries {
     return {
@@ -32,6 +32,12 @@ export class WorkEntriesRepository implements IWorkEntriesRepository {
     async getWorkEntriesById(id: number): Promise<WorkEntries | null> {
         const row = db.prepare(`SELECT * FROM time_entries WHERE id = ?`).get(id);
         if (!row) return null;
+        return mapRowToWorkEntries(row);
+    }
+
+    async updateWorkEntries(entry: WorkEntriesUpdate): Promise<WorkEntries> {
+        const row = db.prepare(`UPDATE time_entries SET date = COALESCE(?, date), hours = COALESCE(?, hours), amount = COALESCE(?, amount), description = COALESCE(?, description) WHERE id = ? RETURNING *`)
+            .get(entry.date, entry.hours, entry.amount, entry.description ?? null, entry.id);
         return mapRowToWorkEntries(row);
     }
 

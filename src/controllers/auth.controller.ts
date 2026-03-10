@@ -1,7 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { IAuthController, IAuthService, UserCreate } from "../types/user";
 import { registerSchema, loginSchema } from "../schemas/auth.schema";
-import { z } from "zod";
 import type { JwtAccessPayload, JwtRefreshPayload } from "../utils/jwt";
 
 export class AuthController implements IAuthController {

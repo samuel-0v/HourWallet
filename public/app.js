@@ -178,6 +178,28 @@ async function showDashboard() {
     <div id="te-msg" class="muted"></div>`;
   content.appendChild(addCard);
 
+  // Converter valor recebido para horas ao digitar
+  const convCard = document.createElement('div');
+  convCard.className = 'card form';
+  convCard.innerHTML = `
+    <h3>Converter valor para horas</h3>
+    <label>Valor (R$)</label><input id="conv-amount" type="number" step="0.01" min="0" placeholder="Ex: 100"/>
+    <div style="margin-top:8px">
+      <button class="btn" id="do-convert">Converter</button>
+      <span id="conv-result" class="muted" style="margin-left:12px"></span>
+    </div>`;
+  content.appendChild(convCard);
+
+  document.getElementById('do-convert').onclick = () => {
+    const amount = Number(document.getElementById('conv-amount').value);
+    const resultEl = document.getElementById('conv-result');
+    if (!amount || amount <= 0) { resultEl.textContent = 'Digite um valor válido.'; return; }
+    const averageRate = Number(document.getElementById('saldo-info').querySelector('div:nth-child(4)').textContent.replace('R$ ', ''));
+    if (!averageRate || averageRate <= 0) { resultEl.textContent = 'Valor médio por hora inválido.'; return; }
+    const hours = amount / averageRate;
+    resultEl.textContent = `Equivale a ${hours.toFixed(2)} horas.`;
+  }
+
   // Lista
   const listCard = document.createElement('div');
   listCard.className = 'card';
