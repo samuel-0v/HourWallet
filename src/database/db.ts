@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Tabela de entradas de horas trabalhadas
-CREATE TABLE IF NOT EXISTS time_entries (
+CREATE TABLE IF NOT EXISTS work_entries (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     date TEXT NOT NULL,            -- data do trabalho (YYYY-MM-DD)
@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS time_entries (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Tabela de compras feitas usando saldo em horas
-CREATE TABLE IF NOT EXISTS purchases (
+-- Tabela de entradas de despesas
+CREATE TABLE IF NOT EXISTS expense_entries (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     date TEXT NOT NULL,            -- data da compra
